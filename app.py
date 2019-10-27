@@ -15,16 +15,16 @@ def auth_cookie():
         for a in db:
             if (str(hash(a[0])) == cookie):
                 print("cookie get")
-                return fl.redirect(fl.url_for('spell_check'))
+                return True
     except:
         pass
-    return None
+    return False
 @app.route('/register',methods=['POST', 'GET'])
 def register():
     print ("register")
     resp = auth_cookie()
     if (resp):
-        return resp
+        return fl.render_template('login_success.html')
     if (fl.request.method == 'POST'):
         username = fl.request.form['username']
         password = fl.request.form['password']
@@ -42,12 +42,10 @@ def register():
 @app.route('/login',methods=['POST','GET'])
 def login():
     print ("login")
-    resp = auth_cookie()
-    if (resp != None):
-        return resp
+    if (auth_cookie()):
+        return fl.render_template('login_success.html')
 
     if fl.request.method == 'POST':
-        failinfo = "Incorrect"
         for a in db:
             username = fl.request.form['username']
             password = fl.request.form['password']
@@ -60,7 +58,7 @@ def login():
                 resp.set_cookie('username', str(hash(username)))
                 return resp
         
-        return "<p id=\"result\">"+failinfo+"</p>"
+        return fl.render_template('login_failure.html')
     else:    
         return fl.render_template('login.html')
 
@@ -68,7 +66,7 @@ def login():
 def spell_check():
     resp = auth_cookie()
     if (not resp):
-        return fl.redirect(fl.url_for("login"))
+        return fl.render_template('login_failure.html')
     if fl.request.method == 'POST':
         
         text = fl.request.form['input']
