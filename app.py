@@ -15,7 +15,7 @@ tokens={}
    
 def valid_userinfo(s):
     for i in range(len(s)):
-        if (not ((s[i]>='A' and s[i] <= 'Z') or (s[i] >= 'a' and s[i] <= 'z') or (s[i]>='0' and s[i] <='9'))):
+        if (not ((s[i]>='A' and s[i] <= 'Z') or (s[i] >= 'a' and s[i] <= 'z') or (s[i]>='0' and s[i] <='9') or (s[i] == '_') or (s[i] == '!'))):
             return False
     return True
 def auth_cookie():
