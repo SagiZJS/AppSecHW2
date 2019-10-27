@@ -44,7 +44,7 @@ def register():
 
         twofa = fl.request.form['twofa']
         if (not (valid_userinfo(username) and valid_userinfo(password) and valid_userinfo(twofa) ) ):
-            return fl.render_template('register.html',error="username/password/twofa syntax error, should only contains letters and numerics")
+            return fl.render_template('register_failure.html')
         if ((not username) or (not password) or (not twofa)):
             return fl.render_template('register_failure.html')
         for a in db:
@@ -68,7 +68,7 @@ def login():
             password = fl.request.form['password']
             twofa = fl.request.form['twofa'] 
             if (not(valid_userinfo(username) and valid_userinfo(password) and valid_userinfo(twofa))):
-                return fl.render_template('login.html',error="username/password/twofa syntax error, should only contains letters and numerics")
+                return fl.render_template('login_failure.html')
             if (username == a[0] and password == a[1]):
                 if (twofa != a[2]):
                     failinfo = "Two-factor failure"
