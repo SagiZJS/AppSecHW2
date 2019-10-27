@@ -90,9 +90,8 @@ def spell_check():
         print(content)
         if (content):
             content = content.replace("\n",",")[:-1]
-        print(content)
-        return "<h2>text:</h2><br><p id=\"textout\">"+text+"<h2>misspelled:</h2><br></p><br>"+"<p id=\"misspelled\">"+content+"</p>"
-        
+        print(fl.escape(content))
+        return fl.render_template("spell_check_result.html",text=text,result=content)
     else:
         token = random.randint(0, 10000000)
         print(token)

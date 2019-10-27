@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Spell Check</h2><br>
+<p id="result"> success login </p><br>
+{% if text %}
+<h2>text:</h2><br><p id="textout">{{text}}
+</p><br>
+{% endif %}
+{% if result %}
+<h2>misspelled:</h2><br>
+<p id="misspelled">
+{{result}}
+</p>    
+{% endif %}
+</body>
+</html>
