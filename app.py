@@ -1,9 +1,11 @@
 #from flask import Flask, escape, request, url_for
 import flask as fl 
+import random
 
 app = fl.Flask(__name__)
 
 db = [['admin','123','123']]
+tokens={}
    
 def auth_cookie():
     
@@ -15,7 +17,7 @@ def auth_cookie():
         for a in db:
             if (str(hash(a[0])) == cookie):
                 print("cookie get")
-                return True
+                return a[0]
     except:
         pass
     return False
@@ -37,6 +39,7 @@ def register():
         db.append([username,password,twofa])
         return fl.render_template('register_success.html')
     else:
+        
         return fl.render_template('register.html')
 
 @app.route('/login',methods=['POST','GET'])
@@ -60,7 +63,7 @@ def login():
         
         return fl.render_template('login_failure.html')
     else:    
-        return fl.render_template('login.html')
+        return fl.render_template('login.html', )
 
 @app.route('/spell_check',methods=['GET','POST'])
 def spell_check():
@@ -68,7 +71,13 @@ def spell_check():
     if (not resp):
         return fl.render_template('login_failure.html')
     if fl.request.method == 'POST':
-        
+        token = fl.request.form['CSRFToken']
+        print("POST",token)
+        print("POST tokens",tokens[resp])
+        print(type(token),len(token))
+        print(type(tokens[resp]),len(tokens[resp]))
+        if (tokens[resp] != token): 
+            return fl.render_template('login_failure.html')
         text = fl.request.form['input']
         fw = open("to_check.txt","w")
         fw.write(text)
@@ -77,10 +86,17 @@ def spell_check():
         import os
         os.system("./a.out to_check.txt wordlist.txt > res.txt")
         content = fr.read()
-        if (content):
-            content = content.replace("\n",",")[-1]
         fr.close()
+        print(content)
+        if (content):
+            content = content.replace("\n",",")[:-1]
+        print(content)
         return "<h2>text:</h2><br><p id=\"textout\">"+text+"<h2>misspelled:</h2><br></p><br>"+"<p id=\"misspelled\">"+content+"</p>"
         
     else:
-        return fl.render_template('spell_check.html')
+        token = random.randint(0, 10000000)
+        print(token)
+        tokens[resp] = str(token)
+        print(tokens[resp])
+        
+        return fl.render_template('spell_check.html', csrftoken=token)

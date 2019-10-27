@@ -11,6 +11,9 @@
     <textarea name="input" rows="10" cols="100" name="input" id="inputtext">
     </textarea>
     <br>
+    {% if csrftoken %}
+    <input type="hidden" name="CSRFToken" id="csrftoken" value = {{csrftoken}}><br>
+    {% endif %}
     <input type="submit" value="Submit">
 </form>
 </body>
