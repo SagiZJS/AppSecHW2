@@ -3,10 +3,21 @@ import flask as fl
 import random
 
 app = fl.Flask(__name__)
+app.config.update(
+    #
+    SESSION_COOKIE_HTTPONLY=True,
+    #SESSION_COOKIE_SECURE=True,
+    #SESSION_COOKIE_SMAESITE=True,
+)
 
 db = [['admin','123','123']]
 tokens={}
    
+def valid_userinfo(s):
+    for i in range(len(s)):
+        if (not ((s[i]>='A' and s[i] <= 'Z') or (s[i] >= 'a' and s[i] <= 'z') or (s[i]>='0' and s[i] <='9'))):
+            return False
+    return True
 def auth_cookie():
     
     cookie = None
@@ -30,7 +41,10 @@ def register():
     if (fl.request.method == 'POST'):
         username = fl.request.form['username']
         password = fl.request.form['password']
+
         twofa = fl.request.form['twofa']
+        if (not (valid_userinfo(username) and valid_userinfo(password) and valid_userinfo(twofa) ) ):
+            return fl.render_template('register.html',error="username/password/twofa syntax error, should only contains letters and numerics")
         if ((not username) or (not password) or (not twofa)):
             return fl.render_template('register_failure.html')
         for a in db:
@@ -53,6 +67,8 @@ def login():
             username = fl.request.form['username']
             password = fl.request.form['password']
             twofa = fl.request.form['twofa'] 
+            if (not(valid_userinfo(username) and valid_userinfo(password) and valid_userinfo(twofa))):
+                return fl.render_template('login.html',error="username/password/twofa syntax error, should only contains letters and numerics")
             if (username == a[0] and password == a[1]):
                 if (twofa != a[2]):
                     failinfo = "Two-factor failure"
@@ -63,7 +79,7 @@ def login():
         
         return fl.render_template('login_failure.html')
     else:    
-        return fl.render_template('login.html', )
+        return fl.render_template('login.html')
 
 @app.route('/spell_check',methods=['GET','POST'])
 def spell_check():
