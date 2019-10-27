@@ -98,9 +98,9 @@ def spell_check():
         fw = open("to_check.txt","w")
         fw.write(text)
         fw.close()
-        fr = open("res.txt","r")
         import os
         os.system("./a.out to_check.txt wordlist.txt > res.txt")
+        fr = open("res.txt","r")
         content = fr.read()
         fr.close()
         print(content)
